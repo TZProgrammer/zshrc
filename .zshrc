@@ -10,7 +10,7 @@ eval "$(starship init zsh)"
 zstyle ':omz:update' mode auto      # update automatically without asking
 
 # List of plugins used
-plugins=(git sudo zsh-256color zsh-autosuggestions zsh-syntax-highlighting)
+plugins=(git sudo)
 source $ZSH/oh-my-zsh.sh
 
 # Preferred editor for local and remote sessions

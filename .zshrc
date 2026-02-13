@@ -1,6 +1,6 @@
 # Oh-my-zsh installation path
 # ZSH path managed by Home Manager or generic fallback
-ZSH="$HOME/.oh-my-zsh"
+ZSH=${ZSH:-$HOME/.oh-my-zsh}
 
 # Path to powerlevel10k theme
 # source /usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme

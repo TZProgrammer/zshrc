@@ -1,5 +1,6 @@
 # Oh-my-zsh installation path
-ZSH=/usr/share/oh-my-zsh/
+# ZSH path managed by Home Manager or generic fallback
+ZSH="$HOME/.oh-my-zsh"
 
 # Path to powerlevel10k theme
 # source /usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme
@@ -10,7 +11,6 @@ zstyle ':omz:update' mode auto      # update automatically without asking
 
 # List of plugins used
 plugins=(git sudo zsh-256color zsh-autosuggestions zsh-syntax-highlighting)
-source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh
 source $ZSH/oh-my-zsh.sh
 
 # Preferred editor for local and remote sessions
@@ -18,56 +18,19 @@ export EDITOR='nvim'
 bindkey -v
 
 # In case a command is not found, try to find the package that has it
-function command_not_found_handler {
-    local purple='\e[1;35m' bright='\e[0;1m' green='\e[1;32m' reset='\e[0m'
-    printf 'zsh: command not found: %s\n' "$1"
-    local entries=( ${(f)"$(/usr/bin/pacman -F --machinereadable -- "/usr/bin/$1")"} )
-    if (( ${#entries[@]} )) ; then
-        printf "${bright}$1${reset} may be found in the following packages:\n"
-        local pkg
-        for entry in "${entries[@]}" ; do
-            local fields=( ${(0)entry} )
-            if [[ "$pkg" != "${fields[2]}" ]]; then
-                printf "${purple}%s/${bright}%s ${green}%s${reset}\n" "${fields[1]}" "${fields[2]}" "${fields[3]}"
-            fi
-            printf '    /%s\n' "${fields[4]}"
-            pkg="${fields[2]}"
-        done
-    fi
-    return 127
-}
 
-# Detect AUR wrapper
-if pacman -Qi yay &>/dev/null; then
-   aurhelper="yay"
-elif pacman -Qi paru &>/dev/null; then
-   aurhelper="paru"
-fi
-
-function in {
-    local -a inPkg=("$@")
-    local -a arch=()
-    local -a aur=()
-
-    for pkg in "${inPkg[@]}"; do
-        if pacman -Si "${pkg}" &>/dev/null; then
-            arch+=("${pkg}")
-        else
-            aur+=("${pkg}")
-        fi
-    done
-
-    if [[ ${#arch[@]} -gt 0 ]]; then
-        sudo pacman -S "${arch[@]}"
-    fi
-
-    if [[ ${#aur[@]} -gt 0 ]]; then
-        ${aurhelper} -S "${aur[@]}"
-    fi
-}
 
 # home-manager
 . "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
+
+# Zsh-abbr (NixOS path)
+[ -f /run/current-system/sw/share/zsh-abbr/zsh-abbr.zsh ] && source /run/current-system/sw/share/zsh-abbr/zsh-abbr.zsh
+
+# NixOS & Dev Shortcuts
+alias nos='nh os switch /etc/nixos'
+alias nosu='nh os switch -u /etc/nixos'
+alias hms='nh home switch'
+alias nvc='cd ~/repos/LazyVim && nvim'
 
 # Helpful aliases
 alias c='clear' # clear terminal
@@ -76,16 +39,6 @@ alias ls='eza -1 --icons=auto' # short list
 alias ll='eza -lha --icons=auto --sort=name --group-directories-first' # long list all
 alias ld='eza -lhD --icons=auto' # long list dirs
 alias lt='eza --icons=auto --tree' # list folder as tree
-alias un='$aurhelper -Rns' # uninstall package
-alias up='$aurhelper -Syu --noconfirm' # update system/package/aur
-alias u='$aurhelper --noconfirm' # update system/package/aur
-alias ud='$aurhelper --devel --noconfirm' # update system/package/aur
-alias yd='$aurhelper --devel' # update system/package/aur
-alias y='$aurhelper' # update system/package/aur
-alias pl='$aurhelper -Qs' # list installed package
-alias pa='$aurhelper -Ss' # list available package
-alias pc='$aurhelper -Sc' # remove unused cache
-alias po='$aurhelper -Qtdq | $aurhelper -Rns -' # remove unused packages, also try > $aurhelper -Qqd | $aurhelper -Rsu --print -
 alias vc='code' # gui code editor
 alias v='nvim' # clear terminal
 

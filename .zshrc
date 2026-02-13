@@ -21,7 +21,7 @@ bindkey -v
 
 
 # home-manager
-. "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
+. "/etc/profiles/per-user/$USER/etc/profile.d/hm-session-vars.sh"
 
 # Zsh-abbr (NixOS path)
 [ -f /run/current-system/sw/share/zsh-abbr/zsh-abbr.zsh ] && source /run/current-system/sw/share/zsh-abbr/zsh-abbr.zsh
